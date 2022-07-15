@@ -2,6 +2,8 @@
 
 Mediul de programare folosit este PyCharm pentru Windows, versiunea de python 3.9.7
 
+https://www.jetbrains.com/pycharm/download/#section=windows
+
 Librarii instalate pentru proiect:
 
 *Numpy* 
