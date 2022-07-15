@@ -3,10 +3,10 @@
 Mediul de programare folosit este PyCharm pentru Windows, versiunea de python 3.9.7
 
 Librarii instalate pentru proiect:
-*Numpy 
-*pyautogui
-*opencv
-*pyaudio
+*Numpy* 
+*pyautogui*
+*opencv*
+*pyaudio*
 
 Instalarea s-a facut folosind pip: py -m pip install *libeary name*
 
