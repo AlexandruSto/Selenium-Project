@@ -42,3 +42,24 @@ legacy-install-failure pentru libraria pyaudio
 Dupa realizarea acestor pasi toate librariile au fost instalate cu succes // 15.07.2022
 
 Nota: Librariile numpy si opencv nu au prezentati dificultati deoarece acestea au mai fost folosite in proiecte anterioare.
+
+
+EDIT:
+
+metoda descrisa anterior nu a dat efect, rezultand in eroarea Could not import the PyAudio C module '_portaudio'. la rularea programului
+
+instalarea librarieri pipwin si folosirea acesteia a adus la instalarea corecta a librariei pyaudio
+
+*py -m pipwin install pyaudio*
+
+alte librarii instalate pe parcursul proiectului:
+
+*multiprocessing*
+
+*wave*
+
+*time*
+
+*keyboard*
+
+*moviepy*
