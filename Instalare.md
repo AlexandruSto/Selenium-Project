@@ -1,6 +1,6 @@
 # Selenium-Project
 
-Mediul de programare folosit este PyCharm pentru Windows, versiunea de python 3.9.7
+Mediul de programare folosit este PyCharm pentru Windows 10, versiunea de python 3.9.10
 
 https://www.jetbrains.com/pycharm/download/#section=windows
 
