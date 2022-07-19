@@ -27,6 +27,7 @@ import time
 
 
 # video config
+
 resolution = (1920, 1080)
 codec = cv2.VideoWriter_fourcc(*"mp4v")
 filename = "Recording.mp4"
@@ -35,6 +36,7 @@ out = cv2.VideoWriter(filename, codec, fps, resolution)
 
 
 #sound config
+
 sound  = True
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
