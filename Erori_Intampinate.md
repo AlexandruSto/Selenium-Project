@@ -45,6 +45,7 @@ Erori Opencv:
     
     Rezolvare: Folosirea unui Queue pentru a trimite date de la subprocess la procesul main, scrierea videoului in procesul main si inchiderea fisierului in 
     procesul main rezulta la un fisier video necorupt
+    Aceasta eroare nu se prezinta si la libraria pyaudio, poate este o particularitate a Opencv
     
   -Eroare Opencv la conversia in mp4:
   
