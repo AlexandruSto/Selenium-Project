@@ -55,6 +55,11 @@ Erori Opencv:
     Rezolvare: library-ul moviepy folosit pentru alipirea video si audio nu accepta fisiere .avi, doar .mp4 pentru video
     totodata videoclipul final redat de aceasta are video si audio prezente si corecte. Deci nu trebuie implementat un fix momentan
     
+  -Inacesibilitate cv2.waitKey
+    
+    -Cat timpt fereastra cv2 nu apare, inputul de la tastatura nu se aplica la cv2.waitkey, inregistrarea nu poate fi oprita la comanda
+    
+    Rezolvare: Implementare timer pentru a setat o perioada standard de filmare, aceasta poate fi modificata din cod
     
 Erori pyaudio:
 
