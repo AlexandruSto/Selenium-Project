@@ -59,6 +59,11 @@ Fara aceste setari programul nu va inregistra audio.
 Dupa rularea executabilului Cod.py, acesta downloadeaza driverul de chrome si il retine in memoria cache la fiecare rulare, nu este necesara atribuirea unui 
 path catre acest driver. Codul va crea 4 fisiere: 
 RecorderLog.txt - acesta retine datele despre rularea programului si nivelul de decibeli al fisierelor video; 
+
 Output1.wav - acesta este inregistrarea audio creata; 
+
 Recording.mp4 - este inregistrarea video creata; 
+
 Vidfin.mp4 - este videoul final cu audio si video combinat.
+
+Analiza DBFS a fisierelor Output1.wav si Vidfin.mp4 se regaseste in fisierul Recorderlog.txt
