@@ -20,6 +20,8 @@
 
 #Vizualizeaza fisierul raw pentu a copia corect codul
 
+#Finishing touches added
+
 ######################################
 
 # importing the required packages
@@ -46,10 +48,11 @@ import logging
 
 # video config
 resolution = (1920, 1080)
-codec = cv2.VideoWriter_fourcc(*"mp4v")
+codec = cv2.VideoWriter_fourcc(*"mp4v")#tfisier salvat ca si mp4 deoarece libraria moviepy nu accepta format video .avi
 filename = "Recording.mp4"
 fps = 20.0
 out = cv2.VideoWriter(filename, codec, fps, resolution)
+#onfigurarea video facuta la inceputul fisierului asigura accesul functiilor necesare la date
 
 
 #sound config
@@ -60,17 +63,16 @@ CHANNELS = 2
 RATE = 44100
 RECORD_SECONDS = 60
 p = pyaudio.PyAudio()
+#onfigurarea audio facuta la inceputul fisierului asigura accesul functiilor necesare la date
 
 
-t = time.localtime()
+t = time.localtime()# folosit pentru detalii consola si loguri
 logging.basicConfig(filename="RecorderLog.log",
                     filemode='a',
                     level=logging.INFO)
-
 logger = logging.getLogger()
-
 logger.setLevel(logging.INFO)
-
+#folosit pentru a loga cu succes datele necesare
 
 def rms_flat(a):  # from matplotlib.mlab
     """
@@ -105,8 +107,8 @@ def measure_wav_db_level(wavFile):
     return str(orig_SPL)
 
 
+
 def render(video,audio):
-    sys.stdout = open('file.log', 'a')
     try:
         videoclip = VideoFileClip(video)
     except OSError:
@@ -125,6 +127,10 @@ def render(video,audio):
     videoclip.close()
     audioclip.close()
     new_audioclip.close()
+    print("Video final mp4 creat cu succes! " + time.strftime("%H:%M:%S", t))
+    logger.info("Video final mp4 creat cu succes! " + time.strftime("%H:%M:%S", t))
+#programul se opreste daca unul dintre fisiere lipseste
+#fisierele sunt generate pe parcursul rularii, daca acestea lipsesc undeva este o greseala
 
 
 def sound():
@@ -138,7 +144,8 @@ def sound():
             print("Index identificat! " + time.strftime("%H:%M:%S", t) + "\n")
             logger.info("Index identificat! " + time.strftime("%H:%M:%S", t) + "\n")
 
-
+#functia cauta indexul Stereo mix pentru a asigura output audio in fisier
+#in cazul in care acesta lipseste, fisierul audio nu va avea sunet
     try:
         stream = p.open(format=FORMAT,
                     channels=CHANNELS,
@@ -159,6 +166,7 @@ def sound():
                         frames_per_buffer=CHUNK)
     print("Pornire inregistrare audio "+time.strftime("%H:%M:%S", t)+"\n")
     logger.info("Pornire inregistrare audio "+time.strftime("%H:%M:%S", t)+"\n")
+
     frames = []
     try:
         for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
@@ -169,8 +177,10 @@ def sound():
     except IndexError:
         print("Eroare citire stream audio"+time.strftime("%H:%M:%S", t)+"\n")
         logger.info("Eroare citire stream audio"+time.strftime("%H:%M:%S", t)+"\n")
+
     print("Inregistrare audio incheiata, audiofile deschis "+time.strftime("%H:%M:%S", t)+"\n")
     logger.info("Inregistrare audio incheiata, audiofile deschis "+time.strftime("%H:%M:%S", t)+"\n")
+
     wf = wave.open("output1.wav", 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
@@ -179,24 +189,31 @@ def sound():
     wf.close()
     print("Audiofile inchis "+time.strftime("%H:%M:%S", t)+"\n")
     logger.info("Audiofile inchis "+time.strftime("%H:%M:%S", t)+"\n")
+#scrierea audio nu necesita transfer de date catre procesul main
+#aceasta inregistreaza si inchide fisierul cu succes
+
 
 
 def cap(a):
     timeout = time.time() + 65
     logger.info("Pornire inregistrare video " + time.strftime("%H:%M:%S", t))
     print("Pornire inregistrare video " + time.strftime("%H:%M:%S", t) )
-
+    #daca fereastra cv2 nu este vizibila, inputul de la tastatura nu se aplica la cv2.waitKey
+    #drept pentru care inregistrarea este setata la un timer din program
     while True:
         img = pyautogui.screenshot()
         frame = np.array(img)
         #cv2.imshow('Live', frame)
         a.put(frame)
+        #transferul de date creat catre procesul main
+        #in procesul main se desfasoara scrierea fisierului video
         if cv2.waitKey(1) == ord('s') or time.time() > timeout:
             a.put(np.array(None))
             break
 
     print("Inregistrare video incheiata " + time.strftime("%H:%M:%S", t) )
     logger.info("Inregistrare video incheiata " + time.strftime("%H:%M:%S", t) )
+
     cv2.destroyAllWindows()
     a.close()
     print("Inchidere ferestre cv2 " +time.strftime("%H:%M:%S", t) )
@@ -214,34 +231,64 @@ def ytb():
         driver.get("https://www.youtube.com")
         print("Browser Deschis "+time.strftime("%H:%M:%S", t))
         logger.info("Browser Deschis "+time.strftime("%H:%M:%S", t))
-
+    except selenium.common.exceptions.WebDriverException:
+        print("Fara conexiune la Internet" +time.strftime("%H:%M:%S", t))
+        logger.info("Fara conexiune la Internet" +time.strftime("%H:%M:%S", t))
+        return
+    try:
         accept_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH,
                                                                                         "/html/body/ytd-app/ytd-consent-bump-v2-lightbox/tp-yt-paper-dialog/div[4]/div[2]/div[6]/div[1]/ytd-button-renderer[2]/a/tp-yt-paper-button")))
         accept_button.click()
 
     except selenium.common.exceptions.TimeoutException:
-        pass
+        print("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        logger.info("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        return
 
     time.sleep(2)
     #print("Passed Cookies.. "+time.strftime("%H:%M:%S", t))
 
-    searchbox = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,
+    try:
+        searchbox = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,
                                                                                 "/html/body/ytd-app/div[1]/div/ytd-masthead/div[3]/div[2]/ytd-searchbox/form/div[1]/div[1]/input")))
+    except selenium.common.exceptions.TimeoutException:
+        print("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        logger.info("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        return
 
-    searchbox.send_keys("2Scratch - Secrets")
-    print("Alegere video "+time.strftime("%H:%M:%S", t))
-    logger.info("Browser Deschis "+time.strftime("%H:%M:%S", t))
-    search_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
+    try:
+        searchbox.send_keys("2Scratch - Secrets")
+        print("Alegere video "+time.strftime("%H:%M:%S", t))
+        logger.info("Browser Deschis "+time.strftime("%H:%M:%S", t))
+    except selenium.common.exceptions.TimeoutException:
+        print("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        logger.info("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        return
+
+    try:
+        search_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
             (By.XPATH, "/html/body/ytd-app/div[1]/div/ytd-masthead/div[3]/div[2]/ytd-searchbox/button")))
-    search_button.click()
-    print("Cautare video "+time.strftime("%H:%M:%S", t))
-    logger.info("Cautare video "+time.strftime("%H:%M:%S", t))
-    firstvideo = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,
+        search_button.click()
+        print("Cautare video "+time.strftime("%H:%M:%S", t))
+        logger.info("Cautare video "+time.strftime("%H:%M:%S", t))
+    except selenium.common.exceptions.TimeoutException:
+        print("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        logger.info("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        return
+
+    try:
+        firstvideo = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,
                                                                                  "/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/div/div[1]/div/h3/a")))
-    firstvideo.click()
+        firstvideo.click()
+    except selenium.common.exceptions.TimeoutException:
+        print("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        logger.info("Fara conexiune la Internet" + time.strftime("%H:%M:%S", t))
+        return
+#daca browserul pierde conexiunea programul va continua pentru a putea verifica restul functionalitatilor
+#am ales un wait time de 20s de secunde pentru a evita un timeout pentru conexiunile slabe
 
 
-
+#functia main/procesul main care ruleaza aplicatia
 if __name__=="__main__":
     x=Queue()
     print("Initializarea programului " + time.strftime("%H:%M:%S", t) )
@@ -249,6 +296,9 @@ if __name__=="__main__":
     p1=Process(target=cap, args=(x,))
     p12=Process(target=sound,args=())
     p2=Process(target=ytb, args=())
+    #codul foloseste multiprocess pentru a separa procesele necesare rularii
+    #am ales libraria multiprocess in favoarea librariei threading pentru a evita GIL
+    #Global Interpreter Lock
     print("Procese create cu succes " + time.strftime("%H:%M:%S", t) )
     logger.info("Procese create cu succes " + time.strftime("%H:%M:%S", t) )
     p1.start()
@@ -256,11 +306,13 @@ if __name__=="__main__":
     p2.start()
     print("Toate procesele ruleaza " + time.strftime("%H:%M:%S", t) )
     logger.info("Toate procesele ruleaza " + time.strftime("%H:%M:%S", t))
+    #crearea unui stream de date de la subprocesul care inregistreaza ecranul
     a=x.get()
     while a.any():
         out.write(cv2.cvtColor(a, cv2.COLOR_BGR2RGB))
         a=x.get()
-
+    #subprocesele au acces limitat la fisiere, acestea depinzand de procesul main pentru scrierea de date cu succes
+    #astfel fisierul Recording.mp4 nu va fi corupt la deschidere
     p1.join()
     p12.join()
     p2.join()
@@ -276,12 +328,13 @@ if __name__=="__main__":
     logger.info("Procese incheiate cu succes " + time.strftime("%H:%M:%S", t))
 
     out.release()
-
+    #Inchiderea fisierului Recording.mp4 trebuie facuta dupa incheierea subprocesului responsabil cu captura video
+    #nerespectarea acestei ordini duce la o exceptie si coruperea fisierului video
     print("Inchidere videofile " + time.strftime("%H:%M:%S", t) )
     logger.info("Inchidere videofile " + time.strftime("%H:%M:%S", t))
 
     render("Recording.mp4","Output1.wav")
-    print("Video final mp4 creat cu succes! " + time.strftime("%H:%M:%S", t) )
-    logger.info("Video final mp4 creat cu succes! " + time.strftime("%H:%M:%S", t))
+
+
     measure_wav_db_level("Output1.wav")
     measure_wav_db_level("Vidfin.mp4")
