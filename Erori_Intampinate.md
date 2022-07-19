@@ -65,4 +65,17 @@ Erori pyaudio:
   
 Erori Selenium:
 
+  Erori la pierderea conexiunii/ conexiune lenta
   
+  Rezolvare: Exception Handling
+  
+Erori si dificultati generale:
+
+  -Dificultati in crearea fisierului log:
+  
+    -Subprocesele create nu au aceleasi permisiuni la fisiere precum procesul main. Pentru a transmite date acestea trebuie sa foloseasca un procedeu precum Queue
+    si sa trimita catre procesul main, ca acesta sa noteze log-urile. Redirectionarea outputului din consola catre un fisier folosind sys.stdout nu aduce 
+    rezultatul dorit.
+    
+  Rezolvare: folosind libraria Logging putem extrage loguri personalizate despre functionarea programului, fisierul este creat cu append, acesta trebuie golit manual
+    
