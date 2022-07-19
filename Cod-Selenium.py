@@ -1,3 +1,29 @@
+######################################
+
+#Starea programului dupa weekend // 17.07.2022
+
+#Bullet points:
+
+#-connectare la chrome browser reusita
+
+#-creare fisier video si audio reusita
+
+#-segmentarea programului pe mai multe proccese reusita
+
+#EDIT // 19.07.2022 Versiune finala
+
+#Error Handling adaugat
+
+#Loguri adaugate in fisier si in consola // fisierul log este deschis cu append, acesta nu se va goli
+
+#Automatizare completa
+
+#Vizualizeaza fisierul raw pentu a copia corect codul
+
+#Finishing touches added
+
+######################################
+
 # importing the required packages
 import pyautogui
 import cv2
